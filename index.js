@@ -39,6 +39,10 @@ app.get("/users/:id", (req, res) => {
   res.send({ id, name: "Lee" });
 });
 
+app.get("/ghalda", (req, res) => {
+  res.send("HIHIHI GHAL");
+});
+
 // -- belajar query parameter
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
