@@ -40,7 +40,14 @@ app.get("/users/:id", (req, res) => {
 });
 
 app.get("/ghalda", (req, res) => {
-  res.send("HIHIHI GHAL");
+  const { ghalda } = req.query;
+  res.send(`HIHIHI GHAL ${ghalda}`);
+});
+
+app.get("/auth", (req, res) => {
+  res.status(401).json({
+    message: "Unauthorized access"
+  });
 });
 
 // -- belajar query parameter
