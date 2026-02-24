@@ -33,6 +33,12 @@ app.get('/say/:greeting', (req, res) => {
     res.send(greeting);
 });
 
+// -- belajar GET method
+app.get("/users/:id", (req, res) => {
+  const id = req.params.id;
+  res.send({ id, name: "Lee" });
+});
+
 // -- belajar query parameter
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
