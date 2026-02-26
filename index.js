@@ -80,8 +80,8 @@ next();
 });
 
 app.use((err, req, res, next) => {
-  console.log()
-  res.status(500).send('Error Occured');
+  console.log(err.message);
+  res.status(500).send(err.message);
 });
 
 // -- belajar query parameter
