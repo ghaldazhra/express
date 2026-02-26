@@ -1,7 +1,6 @@
 import express from 'express';
 import notesRouter from './routes/notes.js'; 
 import mongoose from 'mongoose';
-import { Post } from './models/index.js';
 
 // -- connect to MongoDB
 // mongoose.connect('mongodb+srv://ghaldazhra1_db_user:ghalda2513@cluster0.pfofhgy.mongodb.net/?appName=Cluster0')
