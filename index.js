@@ -4,14 +4,14 @@ import mongoose from 'mongoose';
 import { Post } from './models/index.js';
 
 // -- connect to MongoDB
-mongoose.connect('mongodb+srv://ghaldazhra1_db_user:ghalda2513@cluster0.pfofhgy.mongodb.net/?appName=Cluster0');
-
-try {
-  await mongoose.connect('mongodb+srv://ghaldazhra1_db_user:ghalda2513@cluster0.pfofhgy.mongodb.net/?appName=Cluster0');
+// mongoose.connect('mongodb+srv://ghaldazhra1_db_user:ghalda2513@cluster0.pfofhgy.mongodb.net/?appName=Cluster0')
+mongoose.connect('mongodb://ghaldazhra1_db_user:ghalda2513@ac-huxnyth-shard-00-00.pfofhgy.mongodb.net:27017,ac-huxnyth-shard-00-01.pfofhgy.mongodb.net:27017,ac-huxnyth-shard-00-02.pfofhgy.mongodb.net:27017/?ssl=true&replicaSet=atlas-5w9vk0-shard-0&authSource=admin')
+.then(() => {
   console.log('Connected to MongoDB');
-} catch (error) {
+})
+.catch((error) => {
   console.error('Error connecting to MongoDB:', error);
-}
+});
 
 const app = express();
 app.use(express.json()); 
