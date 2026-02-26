@@ -1,6 +1,68 @@
 import express from 'express';
+import notesRouter from './routes/notes.js'; 
+import mongoose from 'mongoose';
+import { Post } from './models/index.js';
+
+// -- connect to MongoDB
+mongoose.connect('mongodb+srv://ghaldazhra1_db_user:ghalda2513@cluster0.pfofhgy.mongodb.net/?appName=Cluster0');
+
+try {
+  await mongoose.connect('mongodb+srv://ghaldazhra1_db_user:ghalda2513@cluster0.pfofhgy.mongodb.net/?appName=Cluster0');
+  console.log('Connected to MongoDB');
+} catch (error) {
+  console.error('Error connecting to MongoDB:', error);
+}
 
 const app = express();
+app.use(express.json()); 
+app.use("/notes", notesRouter); 
+
+// -- belajar routing  
+const port = 3000;  
+app.get('/', (req, res) => {
+  res.send('Hello Ghalda!');
+});
+
+// -- belajar route parameter
+app.get('/say/:greeting', (req, res) => {
+    const { greeting } = req.params;
+    res.send(greeting);
+});
+
+// -- belajar GET method
+app.get("/users/:id", (req, res) => {
+  const id = req.params.id;
+  res.send(`User ID: ${id}, Name: Lee`);
+});
+
+app.get("/ghalda", (req, res) => {
+  const { ghalda } = req.query;
+  res.send(`HIHIHI GHAL ${ghalda}`);
+});
+
+app.get("/auth", (req, res) => {
+  res.status(401).send("Unauthorized access");
+});
+
+// -- belajar POST method
+app.post("/hello", (req, res) => {
+  res.send("This is POST method!");
+});
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;  
+
+  if (!username || !password) {
+    res.status(400).send("Username and password are required");
+    return;
+  }
+
+  if(username === "lee leo" && password === "123456"){
+    return res.status(200).send("Login successful");
+  }
+
+  return res.status(401).send("Invalid username or password");
+});
 
 // -- belajar middleware
 app.use((req, res, next) => {     
@@ -18,36 +80,8 @@ next();
 });
 
 app.use((err, req, res, next) => {
-  res.send('Error Occured');
-});
-
-// -- belajar routing  
-const port = 3000;  
-app.get('/', (req, res) => {
-  res.send('Hello Ghalda!');
-});
-
-// -- belajar route parameter
-app.get('/say/:greeting', (req, res) => {
-    const { greeting } = req.params;
-    res.send(greeting);
-});
-
-// -- belajar GET method
-app.get("/users/:id", (req, res) => {
-  const id = req.params.id;
-  res.send({ id, name: "Lee" });
-});
-
-app.get("/ghalda", (req, res) => {
-  const { ghalda } = req.query;
-  res.send(`HIHIHI GHAL ${ghalda}`);
-});
-
-app.get("/auth", (req, res) => {
-  res.status(401).json({
-    message: "Unauthorized access"
-  });
+  console.log()
+  res.status(500).send('Error Occured');
 });
 
 // -- belajar query parameter
