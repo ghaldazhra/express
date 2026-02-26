@@ -80,6 +80,7 @@ const router = Router();
 router.get("/", async (req, res, next) => {
   try {
     const notes = await Post.find(); // Mengambil semua data
+    console.log(notes);
     res.json(notes);
   } catch (e) {
     next(e);
