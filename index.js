@@ -8,9 +8,11 @@ import { Post } from './models/index.js';
 mongoose.connect('mongodb://ghaldazhra1_db_user:ghalda2513@ac-huxnyth-shard-00-00.pfofhgy.mongodb.net:27017,ac-huxnyth-shard-00-01.pfofhgy.mongodb.net:27017,ac-huxnyth-shard-00-02.pfofhgy.mongodb.net:27017/?ssl=true&replicaSet=atlas-5w9vk0-shard-0&authSource=admin')
 .then(() => {
   console.log('Connected to MongoDB');
+  const testdb = 'Hello MongoDB';
 })
 .catch((error) => {
   console.error('Error connecting to MongoDB:', error);
+  const testdb = `Failed to connect to MongoDB: ${error.message}`;
 });
 
 const app = express();
@@ -19,8 +21,20 @@ app.use("/notes", notesRouter);
 
 // -- belajar routing  
 const port = 3000;  
+// app.get('/', (req, res) => {
+//   res.send('Hello Ghalda!' + testdb);
+// });
 app.get('/', (req, res) => {
-  res.send('Hello Ghalda!');
+  // 0: disconnected, 1: connected, 2: connecting, 3: disconnecting
+  const status = mongoose.connection.readyState;
+  const statusMap = {
+    0: "Disconnected",
+    1: "Connected",
+    2: "Connecting",
+    3: "Disconnecting"
+  };
+
+  res.send(`Hello Ghalda! Status Database: ${statusMap[status]}`);
 });
 
 // -- belajar route parameter
