@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 
 // -- connect to MongoDB
 mongoose.connect('mongodb+srv://ghaldazhra1_db_user:ghalda2513@cluster0.pfofhgy.mongodb.net/?appName=Cluster0')
-// mongoose.connect('mongodb://ghaldazhra1_db_user:ghalda2513@ac-huxnyth-shard-00-00.pfofhgy.mongodb.net:27017,ac-huxnyth-shard-00-01.pfofhgy.mongodb.net:27017,ac-huxnyth-shard-00-02.pfofhgy.mongodb.net:27017/?ssl=true&replicaSet=atlas-5w9vk0-shard-0&authSource=admin')
 .then(() => {
   console.log('Connected to MongoDB');
 })
@@ -18,11 +17,7 @@ app.use("/notes", notesRouter);
 
 // -- belajar routing  
 const port = 3000;  
-// app.get('/', (req, res) => {
-//   res.send('Hello Ghalda!' + testdb);
-// });
 app.get('/', (req, res) => {
-  // 0: disconnected, 1: connected, 2: connecting, 3: disconnecting
   const status = mongoose.connection.readyState;
   const statusMap = {
     0: "Disconnected",
