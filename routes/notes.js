@@ -1,75 +1,85 @@
-import { Router } from "express";
-import { Post } from "../models/index.js"; // Pastikan import model Post yang benar
+import express from "express";
+import { Post } from "../models/index.js";
 
-const router = Router();
+const router = express.Router();
 
-// GET ALL
-router.get("/", async (req, res, next) => {
+// GET ALL notes
+router.get("/", async (req, res) => {
   try {
-    const notes = await Post.find(); // Mengambil semua data
-    console.log(notes);
+    const notes = await Post.find();
     res.json(notes);
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
-// GET BY ID
-router.get("/:id", async (req, res, next) => {
+// GET by id
+router.get("/:id", async (req, res) => {
   try {
-    const note = await Post.findById(req.params.id); // Mencari berdasarkan ID MongoDB
-    if (!note) return res.status(404).json({ message: "Note not found" });
+    const id = req.params.id;
+
+    const note = await Post.findById(id);
+
+    if (!note) return res.status(404).json({ message: "Not found" });
+
     res.json(note);
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
-// CREATE
-router.post("/", async (req, res, next) => {
-  const { title, content, author } = req.body;
+// CREATE note
+router.post("/", async (req, res) => {
+  try {
+    const { title, content, author } = req.body;
 
-  if (!title || !content) {
-    return res.status(400).json({
-      message: "Title and content are required",
+    const newNote = await Post.create({
+      title: title.trim(),
+      content,
+      author,
     });
-  }
 
-  try {
-    // Menggunakan Post.create() sesuai gambar materi kamu
-    const note = await Post.create({ title, content, author });
-    res.status(201).json(note);
-  } catch (e) {
-    next(e);
+    res.status(201).json(newNote);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
-// UPDATE
-router.put("/:id", async (req, res, next) => {
-  const { title, content, author } = req.body;
-
+// UPDATE by title
+router.put("/title/:title", async (req, res) => {
   try {
-    // { new: true } agar yang dikembalikan adalah data yang sudah diupdate
-    const note = await Post.findByIdAndUpdate(
-      req.params.id, 
-      { title, content, author },
-      { new: true }
+    const title = req.params.title.trim();
+
+    // Jika ingin mengupdate title juga, pastikan title baru di-trim
+    if (req.body.title) {
+      req.body.title = req.body.title.trim();
+    }
+
+    const updatedNote = await Post.findOneAndUpdate(
+      { title: title }, // Mencari berdasarkan title lama
+      req.body,
+      { new: true, runValidators: true }
     );
-    if (!note) return res.status(404).json({ message: "Note not found" });
-    res.json(note);
-  } catch (e) {
-    next(e);
+
+    if (!updatedNote)
+      return res.status(404).json({ message: "Not found" });
+
+    res.json(updatedNote);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
-// DELETE
-router.delete("/:id", async (req, res, next) => {
+// DELETE by title
+router.delete("/title/:title", async (req, res, next) => {
   try {
-    const note = await Post.findByIdAndDelete(req.params.id);
-    if (!note) return res.status(404).json({ message: "Note not found" });
-    res.json({ message: "Deleted successfully" });
-  } catch (e) {
-    next(e);
+    const deleted = await Post.findOneAndDelete({ title: req.params.title.trim() });
+    if (!deleted) {
+      return res.status(404).json({ message: "Not found" });
+    }
+    res.json({ message: "Deleted" });
+  } catch (err) {
+    next(err);
   }
 });
 
