@@ -77,7 +77,7 @@ router.delete("/title/:title", async (req, res, next) => {
     if (!deleted) {
       return res.status(404).json({ message: "Not found" });
     }
-    res.json({ message: "Deleted" });
+    res.json({ message: "Deleted successfully" });
   } catch (err) {
     next(err);
   }

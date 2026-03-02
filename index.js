@@ -3,23 +3,28 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import notesRouter from './routes/notes.js';
+import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: "*",    
-}
-));
-
+// Middleware
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
+// Routes
 app.use("/notes", notesRouter);
+app.use("/users", userRoutes);
 
-await mongoose.connect(process.env.MONGO_URI);
-console.log("Connected to MongoDB");
-
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+// Database Connection & Server Start
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+    app.listen(3000, () => {
+      console.log("Server is running on port 3000");
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB Connection Error:", err);
+  });
