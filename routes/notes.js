@@ -1,12 +1,13 @@
-import express from "express";
+import express, { application } from "express";
 import { Post } from "../models/index.js";
+import auth from "../middlewares/auth.js";
 
 const router = express.Router();
 
 // GET ALL notes
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
-    const notes = await Post.find();
+    const notes = await Post.find({ user: req.user.id }); // Hanya mengambil catatan milik user yang sedang login
     res.json(notes);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -14,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 // GET by id
-router.get("/:id", async (req, res) => {
+router.get("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -29,7 +30,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // CREATE note
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   try {
     const { title, content, author } = req.body;
 
@@ -37,6 +38,7 @@ router.post("/", async (req, res) => {
       title: title.trim(),
       content,
       author,
+      user: req.user.id, // Mengaitkan catatan dengan user yang membuatnya
     });
 
     res.status(201).json(newNote);
@@ -46,7 +48,7 @@ router.post("/", async (req, res) => {
 });
 
 // UPDATE by title
-router.put("/title/:title", async (req, res) => {
+router.put("/title/:title", auth, async (req, res) => {
   try {
     const title = req.params.title.trim();
 
@@ -56,7 +58,7 @@ router.put("/title/:title", async (req, res) => {
     }
 
     const updatedNote = await Post.findOneAndUpdate(
-      { title: title }, // Mencari berdasarkan title lama
+      { title: title, user: req.user.id }, // Mencari berdasarkan title lama dan user yang sedang login
       req.body,
       { new: true, runValidators: true }
     );
@@ -71,9 +73,9 @@ router.put("/title/:title", async (req, res) => {
 });
 
 // DELETE by title
-router.delete("/title/:title", async (req, res, next) => {
+router.delete("/title/:title", auth, async (req, res, next) => {
   try {
-    const deleted = await Post.findOneAndDelete({ title: req.params.title.trim() });
+    const deleted = await Post.findOneAndDelete({ title: req.params.title.trim(), user: req.user.id });
     if (!deleted) {
       return res.status(404).json({ message: "Not found" });
     }

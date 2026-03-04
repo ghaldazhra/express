@@ -1,12 +1,28 @@
 import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
+
 const PostSchema = new Schema({
-  title: String,
-  content: String,
-  author: String, 
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  }
 }, {
-    timestamps: true,       
+  timestamps: true,
 });
 
 export default PostSchema;
