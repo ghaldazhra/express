@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import notesRouter from './routes/notes.js';
 import userRoutes from './routes/userRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 // Routes
 app.use("/notes", notesRouter);
 app.use("/users", userRoutes);
+app.use("/payment", paymentRoutes);
 
 // Database Connection & Server Start
 mongoose.connect(process.env.MONGO_URI)
